@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import accountService from '../../../services/account.service';
+import { withRouter } from "react-router-dom";
 
 export class Register extends Component {
 
@@ -10,10 +12,29 @@ export class Register extends Component {
         }
     };
 
-    onSubmitHandler = (e) => {
+    //history = useHistory();
+
+    onSubmitHandler = async (e) => {
         e.preventDefault();
         //this.setState({email: "Сало"});
-        console.log("Hello state", this.state);
+        //console.log("Hello state", this.state);
+        try {
+            const model = {
+                userName: this.state.email,
+                email: this.state.email,
+                password: this.state.password,
+                confirmPassword: this.state.password,
+            };
+            const res = await accountService.register(model);
+            
+            console.log("Усе пройшло добре", res);
+            
+            this.props.history.push("/");
+        } catch(error) {
+            console.log("Виникли проблеми");
+        }
+        
+            
     }
 
     onChangeHandler = (e) => {
@@ -27,6 +48,7 @@ export class Register extends Component {
 
     render() {
         const {email, password, errors} = this.state;
+        //console.log(this.props);
         return (
             <div>
                 <h1 className="text-center">Реєстрація</h1>
@@ -62,4 +84,4 @@ export class Register extends Component {
     }
 }
 
-export default Register
+export default withRouter(Register)
