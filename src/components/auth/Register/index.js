@@ -31,7 +31,7 @@ export class Register extends Component {
             
             this.props.history.push("/");
         } catch(error) {
-            console.log("Виникли проблеми");
+            console.log("Виникли проблеми", error.response.data);
         }
         
             
