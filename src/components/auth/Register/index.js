@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import accountService from '../../../services/account.service';
 import { withRouter } from "react-router-dom";
+import classnames from "classnames";
 
 export class Register extends Component {
 
@@ -30,8 +31,39 @@ export class Register extends Component {
             console.log("Усе пройшло добре", res);
             
             this.props.history.push("/");
-        } catch(error) {
-            console.log("Виникли проблеми", error.response.data);
+        } catch(badresponse) {
+            const {errors} = badresponse.response.data;
+            let problem = {};
+            if(errors.Email) {
+                //console.log("Email error", errors.Email);
+                let str="";
+                errors.Email.forEach(message => {
+                    str+=message+" ";
+                    console.log(message);
+                });
+                problem.email=str;
+            }
+            if(errors.Password) {
+                console.log("Password error", errors.Password);
+                let str="";
+                errors.Password.forEach(message => {
+                    str+=message+" ";
+                    console.log(message);
+                });
+                problem.password=str;
+            }
+            if(errors.ConfirmPassword) {
+                console.log("ConfirmPassword error", errors.ConfirmPassword);
+                let str="";
+                errors.ConfirmPassword.forEach(message => {
+                    str+=message+" ";
+                    console.log(message);
+                });
+                problem.confirmPassword=str;
+            }
+
+            this.setState({errors: problem});
+            //console.log("Виникли проблеми", );
         }
         
             
@@ -48,6 +80,7 @@ export class Register extends Component {
 
     render() {
         const {email, password, errors} = this.state;
+        console.log("state - ", this.state);
         //console.log(this.props);
         return (
             <div>
@@ -57,14 +90,20 @@ export class Register extends Component {
                     <div className="mb-3">
                         <label htmlFor="email" className="form-label">Email address</label>
                         <input type="email" 
-                            className="form-control" 
+                            className={classnames("form-control",
+                                            {"is-invalid": errors.email})}
                             id="email" 
                             name="email"
                             value={email}
                             onChange={this.onChangeHandler}/>
 
-                        <span className="text-danger">{errors.email}</span>
-                        {/* {!!errors.email && <span className="text-danger">{errors.email}</span>} */}
+                        {/* <span className="text-danger">{errors.email}</span> */}
+                        {!!errors.email && 
+                        <div className="invalid-feedback">
+                            {errors.email}
+                        </div>  
+                        }
+                        
                     </div>
                     <div className="mb-3">
                         <label htmlFor="password" className="form-label">Password</label>
