@@ -28,6 +28,8 @@ export class Register extends Component {
             };
             const res = await accountService.register(model);
             
+            localStorage.setItem("authToken", token);
+
             console.log("Усе пройшло добре", res);
             
             this.props.history.push("/");
