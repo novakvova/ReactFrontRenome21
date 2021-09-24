@@ -28,7 +28,7 @@ export class Register extends Component {
             };
             const res = await accountService.register(model);
             
-            localStorage.setItem("authToken", token);
+            localStorage.setItem("authToken", res.data.token);
 
             console.log("Усе пройшло добре", res);
             
