@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 class Navbar extends Component {
     render() {
+        console.log("this props navbar", this.props);
+        const {isAuth, username}=this.props;
         return (
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div className="container">
@@ -16,11 +19,23 @@ class Navbar extends Component {
                                 <Link className="nav-link active" aria-current="page" to="/">Home</Link>
                             </li>
                         </ul>
-                        <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/register">Реєструватися</Link>
-                            </li>
-                        </ul>
+                        {!isAuth ?
+                            <ul className="navbar-nav">
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/register">Реєструватися</Link>
+                                </li>
+                            </ul>
+                            :
+                            <ul className="navbar-nav">
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/profile">{username}</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/logout">Вихід</Link>
+                                </li>
+                            </ul>
+                        }
+
                     </div>
                 </div>
             </nav>
@@ -28,4 +43,11 @@ class Navbar extends Component {
     }
 }
 
-export default Navbar
+function mapState(stateRedux) {
+    return {
+        isAuth: stateRedux.auth.isAuth,
+        username: stateRedux.auth.username
+    }
+}
+
+export default connect(mapState)(Navbar);

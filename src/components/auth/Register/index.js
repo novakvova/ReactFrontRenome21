@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import accountService from '../../../services/account.service';
 import { withRouter } from "react-router-dom";
 import classnames from "classnames";
+import { connect } from 'react-redux';
+import { REGISTER_AUTH } from '../../../actions/types';
+import { authUser } from '../../../actions/auth';
 
 export class Register extends Component {
 
@@ -17,6 +20,7 @@ export class Register extends Component {
 
     onSubmitHandler = async (e) => {
         e.preventDefault();
+        
         //this.setState({email: "Сало"});
         //console.log("Hello state", this.state);
         try {
@@ -28,7 +32,10 @@ export class Register extends Component {
             };
             const res = await accountService.register(model);
             
-            localStorage.setItem("authToken", res.data.token);
+            const {token} = res.data;
+            localStorage.setItem("authToken", token);
+            authUser(token, this.props.dispatch);
+            //this.props.dispatch({type: REGISTER_AUTH});
 
             console.log("Усе пройшло добре", res);
             
@@ -83,6 +90,7 @@ export class Register extends Component {
     render() {
         const {email, password, errors} = this.state;
         console.log("state - ", this.state);
+        console.log("regiser props - ", this.props);
         //console.log(this.props);
         return (
             <div>
@@ -125,4 +133,4 @@ export class Register extends Component {
     }
 }
 
-export default withRouter(Register)
+export default connect(null)(withRouter(Register))
