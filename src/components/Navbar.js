@@ -24,6 +24,9 @@ class Navbar extends Component {
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/register">Реєструватися</Link>
                                 </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/login">Вхід</Link>
+                                </li>
                             </ul>
                             :
                             <ul className="navbar-nav">
