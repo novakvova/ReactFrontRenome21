@@ -3,13 +3,18 @@ import { Formik, Form, useField } from 'formik';
 import * as Yup from 'yup';
 import MyTextInput from '../../common/MyTextInput';
 import MyCheckbox from '../../common/MyCheckbox';
-
-
-
+import { useDispatch } from 'react-redux';
+import { authUser } from '../../../actions/auth';
+import accountService from '../../../services/account.service';
+import { useHistory } from 'react-router-dom';
 
 
 // And now we can use these
 const LoginPage = () => {
+
+    const dispatch=useDispatch();
+    const history = useHistory();
+
   return (
     <>
       <h1>Вхід на сайт!</h1>
@@ -21,24 +26,31 @@ const LoginPage = () => {
         }}
         validationSchema={Yup.object({
           email: Yup.string()
-            .email('Invalid email address')
-            .required('Required'),
+            .email('Не коректно вказана пошта')
+            .required('Вкажіть пошту'),
           password: Yup.string()
-            .required('Required'),
+            .required('Вкажіть пароль'),
           acceptedTerms: Yup.boolean()
-            .required('Required')
-            .oneOf([true], 'You must accept the terms and conditions.'),
+            .required("Обов'язкове поле")
+            .oneOf([true], 'Потрібно поставити галочку.'),
         })}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 400);
+        onSubmit={ async (values, { setSubmitting }) => {
+            try {
+                const result = await accountService.login(values);
+                const {token} = result.data;
+                localStorage.authToken=token;
+                authUser(token, dispatch);
+                history.push("/");
+            } catch (badresponse) {
+            }
+            //authUser(token, this.props.dispatch);
+        //   setTimeout(() => {
+        //     alert(JSON.stringify(values, null, 2));
+        //     setSubmitting(false);
+        //   }, 400);
         }}
       >
         <Form>
-          
-
           <MyTextInput
             label="Email Address"
             name="email"
@@ -52,13 +64,12 @@ const LoginPage = () => {
             type="password"
             placeholder="Пароль"
           />
-          
 
           <MyCheckbox id="acceptedTerms" name="acceptedTerms">
-            I accept the terms and conditions
+            Я згідний із правилами сайту
           </MyCheckbox>
 
-          <button type="submit">Submit</button>
+          <button type="submit" className="btn btn-primary">Submit</button>
         </Form>
       </Formik>
     </>
