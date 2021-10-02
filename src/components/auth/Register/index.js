@@ -3,7 +3,6 @@ import accountService from '../../../services/account.service';
 import { withRouter } from "react-router-dom";
 import classnames from "classnames";
 import { connect } from 'react-redux';
-import { REGISTER_AUTH } from '../../../actions/types';
 import { authUser } from '../../../actions/auth';
 
 export class Register extends Component {
