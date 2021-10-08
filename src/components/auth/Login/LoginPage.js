@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import { Formik, Form, useField } from 'formik';
 import * as Yup from 'yup';
 import MyTextInput from '../../common/MyTextInput';
@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { authUser } from '../../../actions/auth';
 import accountService from '../../../services/account.service';
 import { useHistory } from 'react-router-dom';
+import MyPhotoInput from '../../common/MyPhotoInput';
 
 
 // And now we can use these
@@ -15,14 +16,18 @@ const LoginPage = () => {
     const dispatch=useDispatch();
     const history = useHistory();
 
+    const formikRef = useRef();
+
   return (
     <>
       <h1>Вхід на сайт!</h1>
       <Formik
+        innerRef={formikRef}
         initialValues={{
           email: '',
           password: '',
           acceptedTerms: false, // added for our checkbox
+          photo: null
         }}
         validationSchema={Yup.object({
           email: Yup.string()
@@ -36,7 +41,23 @@ const LoginPage = () => {
         })}
         onSubmit={ async (values, { setSubmitting }) => {
             try {
-                const result = await accountService.login(values);
+              // console.log("value: ", values);
+
+              // console.log("Server submit file", JSON.stringify(
+              //   { 
+              //     fileName: values.photo.name, 
+              //     type: values.photo.type,
+              //     size: `${values.photo.size} bytes`
+              //   },
+              //   null,
+              //   2
+              // ));
+              var formData = new FormData();
+              formData.append("email", values.email);
+              formData.append("password", values.password);
+              formData.append("acceptedTerms", values.acceptedTerms);
+              formData.append("photo", values.photo);
+                const result = await accountService.login(formData);
                 const {token} = result.data;
                 localStorage.authToken=token;
                 authUser(token, dispatch);
@@ -64,6 +85,14 @@ const LoginPage = () => {
             type="password"
             placeholder="Пароль"
           />
+
+          <MyPhotoInput
+            field="photo"
+            formikRef={formikRef} />
+
+          <MyPhotoInput
+            field="girl"
+            formikRef={formikRef} />
 
           <MyCheckbox id="acceptedTerms" name="acceptedTerms">
             Я згідний із правилами сайту
