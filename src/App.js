@@ -9,6 +9,8 @@ import LoginPage from './components/auth/Login/LoginPage';
 import Register from './components/auth/Register'
 import Home from './components/Home'
 import Navbar from './components/Navbar'
+import UsersPage from './components/Users';
+
 
 
 class App extends Component {
@@ -26,6 +28,9 @@ class App extends Component {
             </Route>
             <Route exact path="/login">
               <LoginPage />
+            </Route>
+            <Route exact path="/users">
+              <UsersPage />
             </Route>
           </Switch>
        </div>

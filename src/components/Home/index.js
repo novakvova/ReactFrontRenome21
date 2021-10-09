@@ -20,12 +20,11 @@ export class Home extends Component {
 
         } catch (badresponse) {
             this.setState({loading: false});
-            if(badresponse.response.status==401) {
+            if(badresponse.response.status===401) {
                 this.props.history.push("/login");
             }
             console.log("problem", badresponse.response);
         }
-
     }
 
     render() {

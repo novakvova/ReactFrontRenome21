@@ -18,7 +18,7 @@ const MyPhotoInput =({
             <label htmlFor={field} className="form-label">
                 <img src={photo}
                     width="150"
-                    style={{cursor: "pointer"}} />
+                    style={{cursor: "pointer"}} alt="salo" />
             </label>
             <input type="file" 
                 id={field}

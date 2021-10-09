@@ -4,7 +4,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { authUser } from './actions/auth';
-import { REGISTER_AUTH } from './actions/types';
 import App from './App';
 import store from './store';
 
