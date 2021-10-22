@@ -16,7 +16,7 @@ import UsersPage from './components/Users';
 class App extends Component {
   render() {
     return (
-      <Router>
+      <>
        <Navbar />
        <div className="container"> 
           <Switch>
@@ -34,7 +34,7 @@ class App extends Component {
             </Route>
           </Switch>
        </div>
-      </Router>
+       </>
     )
   }
 }

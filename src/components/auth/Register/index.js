@@ -33,45 +33,26 @@ export class Register extends Component {
             
             const {token} = res.data;
             localStorage.setItem("authToken", token);
-            authUser(token, this.props.dispatch);
-            //this.props.dispatch({type: REGISTER_AUTH});
-
+            this.props.dispatch(authUser(token));
             console.log("Усе пройшло добре", res);
             
             this.props.history.push("/");
+
         } catch(badresponse) {
             const {errors} = badresponse.response.data;
             let problem = {};
-            if(errors.Email) {
-                //console.log("Email error", errors.Email);
-                let str="";
-                errors.Email.forEach(message => {
-                    str+=message+" ";
-                    console.log(message);
+            Object.entries(errors).forEach(([key, values]) => {
+                
+                //values.forEach(text=> message+=text+" ");
+                problem[key] =values.map((msg, index) => {
+                    return (
+                        <li key={index}>{msg}</li>
+                    );
                 });
-                problem.email=str;
-            }
-            if(errors.Password) {
-                console.log("Password error", errors.Password);
-                let str="";
-                errors.Password.forEach(message => {
-                    str+=message+" ";
-                    console.log(message);
-                });
-                problem.password=str;
-            }
-            if(errors.ConfirmPassword) {
-                console.log("ConfirmPassword error", errors.ConfirmPassword);
-                let str="";
-                errors.ConfirmPassword.forEach(message => {
-                    str+=message+" ";
-                    console.log(message);
-                });
-                problem.confirmPassword=str;
-            }
+            });
 
             this.setState({errors: problem});
-            //console.log("Виникли проблеми", );
+            console.log("Виникли проблеми ", problem);
         }
         
             
@@ -94,7 +75,6 @@ export class Register extends Component {
         return (
             <div>
                 <h1 className="text-center">Реєстрація</h1>
-
                 <form onSubmit={this.onSubmitHandler}>
                     <div className="mb-3">
                         <label htmlFor="email" className="form-label">Email address</label>

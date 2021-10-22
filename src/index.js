@@ -5,20 +5,20 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { authUser } from './actions/auth';
 import App from './App';
-import store from './store';
+import store, {history} from './store';
+import { ConnectedRouter } from 'connected-react-router';
 
 const token = localStorage.authToken;
 
 if(token) {
-  authUser(token, store.dispatch);
-  //store.dispatch({type: REGISTER_AUTH});
+  store.dispatch(authUser(token));
 }
 
 ReactDOM.render(
-  <React.StrictMode>
     <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
+      <ConnectedRouter history={history}>
+        <App />
+      </ConnectedRouter>
+    </Provider>,
   document.getElementById('root')
 );

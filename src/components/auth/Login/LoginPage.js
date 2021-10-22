@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import MyTextInput from '../../common/MyTextInput';
@@ -6,21 +6,30 @@ import MyCheckbox from '../../common/MyCheckbox';
 import { useDispatch } from 'react-redux';
 import { authUser } from '../../../actions/auth';
 import accountService from '../../../services/account.service';
-import { useHistory } from 'react-router-dom';
+//import { useHistory } from 'react-router-dom';
 import MyPhotoInput from '../../common/MyPhotoInput';
+import { push } from "connected-react-router";
 
 
 // And now we can use these
 const LoginPage = () => {
 
     const dispatch=useDispatch();
-    const history = useHistory();
+    //const history = useHistory();
 
     const formikRef = useRef();
+    const titleRef = useRef();
+    const [invalid, setInvalid] = useState("");
 
   return (
     <>
       <h1>Вхід на сайт!</h1>
+      {invalid &&
+        <div ref={titleRef} className="alert alert-danger">
+          {invalid}
+        </div>
+      }
+      
       <Formik
         innerRef={formikRef}
         initialValues={{
@@ -41,34 +50,18 @@ const LoginPage = () => {
         })}
         onSubmit={ async (values, { setSubmitting }) => {
             try {
-              // console.log("value: ", values);
-
-              // console.log("Server submit file", JSON.stringify(
-              //   { 
-              //     fileName: values.photo.name, 
-              //     type: values.photo.type,
-              //     size: `${values.photo.size} bytes`
-              //   },
-              //   null,
-              //   2
-              // ));
               var formData = new FormData();
-              formData.append("email", values.email);
-              formData.append("password", values.password);
-              formData.append("acceptedTerms", values.acceptedTerms);
-              formData.append("photo", values.photo);
+              Object.entries(values).forEach(([key, value]) => formData.append(key, value));
                 const result = await accountService.login(formData);
                 const {token} = result.data;
                 localStorage.authToken=token;
-                authUser(token, dispatch);
-                history.push("/");
+                dispatch(authUser(token));
+                //history.push("/");
+                dispatch(push("/"));
             } catch (badresponse) {
+              setInvalid(badresponse.response.data.invalid);
+              titleRef.current.scrollIntoView({ behavior: 'smooth' });
             }
-            //authUser(token, this.props.dispatch);
-        //   setTimeout(() => {
-        //     alert(JSON.stringify(values, null, 2));
-        //     setSubmitting(false);
-        //   }, 400);
         }}
       >
         <Form>

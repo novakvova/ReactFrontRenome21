@@ -1,4 +1,4 @@
-import { REGISTER_AUTH, LOGIN_AUTH } from "../actions/types";
+import { REGISTER_AUTH, LOGIN_AUTH, LOGOUT } from "../actions/types";
 
 const initialState = {
     isAuth: false, 
@@ -9,17 +9,17 @@ function authReducer(auth = initialState, action) {
     const {type, data} = action;
     //console.log("reducer data", data);
     switch(type){
-        case REGISTER_AUTH: {
+        case REGISTER_AUTH:
+        case LOGIN_AUTH: {
             return {
                 isAuth: true,
                 username: data.name
             }
             
         }
-        case LOGIN_AUTH: {
-            return {
-                isAuth: true,
-                username: data.name
+        case LOGOUT: {
+            return { 
+                isAuth: false
             }
         }
         default: 
